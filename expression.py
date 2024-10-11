@@ -2,26 +2,54 @@
 import pygame 
 from pygame import Rect
 
+
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((800, 480))
 clock = pygame.time.Clock()
 running = True
 
-left_eye_pos = pygame.Vector2((screen.get_width()/2)+100,130)
-right_eye_pos = pygame.Vector2((screen.get_width()/2)-100,130)
-rect = (380, 280, 120, 100)
+rect = (380, 280, 120, 100) 
+timer = 1000
 
+def update():
+    pygame.display.update()
+    pygame.display.flip()
 
 def mouse_position():
     print(pygame.mouse.get_pos())
 
-x = 300
-y = 280
-width = 120
-height = 100
-start_angle = 190
-end_angle = 350
+def clear_screen():
+    screen.fill('black')
+    pygame.display.flip()
+
+def neutral_position():
+    print('eye position neutral')
+
+    #drawing left eye
+    left_eye_pos = pygame.Rect((screen.get_width()/2)-175, (screen.get_width()/8), 100, 200)
+    pygame.draw.rect(screen,'blue',left_eye_pos,border_radius=20)
+    
+    #drawing right eye
+    right_eye_pos = pygame.Rect((screen.get_width()/2)+100, (screen.get_width()/8), 100, 200)
+    pygame.draw.rect(screen,'blue',right_eye_pos,border_radius=20)
+    
+    #updating
+    update()
+
+def blinking_position():
+    print('eye blinking')
+    #drawing left eye
+    left_eye_pos = pygame.Rect((screen.get_width()/2)-175, (screen.get_width()/4), 100, 100)
+    pygame.draw.rect(screen,'blue',left_eye_pos,border_radius=20)
+
+    #drawing right eye
+    right_eye_pos = pygame.Rect((screen.get_width()/2)+100, (screen.get_width()/4), 100, 100)
+    pygame.draw.rect(screen,'blue',right_eye_pos,border_radius=20)
+    
+    #updating
+    update()
+
 
 while running:
     # poll for events
@@ -33,19 +61,20 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
 
-    # pygame.draw.circle(screen,'blue', left_eye_pos, 50)
-    # pygame.draw.circle(screen,'blue', right_eye_pos, 50)
-    # pygame.draw.arc(screen,'blue',rect,100,100,1000)
-    pygame.draw.arc(screen, 'blue', rect, 190, 350, 100)
+    neutral_position()
+    pygame.time.wait(timer)
+    clear_screen()
     
-    # pygame.draw.circle()
+    blinking_position()
+    pygame.time.wait(timer)
+
+
     pygame.display.update()
     pygame.display.flip()
-    # pygame.draw.circle(screen, "red", player_pos, 40)
-    
-    # flip() the display to put your work on screen
-    # limits FPS to 60``
-    mouse_position()    
+
+
+
 
 pygame.quit()
+
 
