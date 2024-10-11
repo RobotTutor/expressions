@@ -1,6 +1,8 @@
 # Example file showing a circle moving on screen
 import pygame 
 from pygame import Rect
+import socket
+
 
 
 # pygame setup
@@ -50,27 +52,58 @@ def blinking_position():
     #updating
     update()
 
+def run():
 
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    while running:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+        # fill the screen with a color to wipe away anything from last frame
+        screen.fill("black")
 
-    neutral_position()
-    pygame.time.wait(timer)
-    clear_screen()
-    
-    blinking_position()
-    pygame.time.wait(timer)
+        neutral_position()
+        pygame.time.wait(timer)
+        clear_screen()
+        
+        blinking_position()
+        pygame.time.wait(timer)
 
 
-    pygame.display.update()
-    pygame.display.flip()
+        pygame.display.update()
+        pygame.display.flip()
+
+
+# Define the host and port
+HOST = '127.0.0.1'  # Localhost
+PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
+
+# Create a TCP socket
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    # Bind the socket to the address and port
+    s.bind((HOST, PORT))
+    # Listen for incoming connections
+    s.listen()
+    print(f"Listening on {HOST}:{PORT}...")
+
+    while True:
+        # Accept a connection
+        conn, addr = s.accept()
+        with conn:
+            print(f"Connected by {addr}")
+            while True:
+                data = conn.recv(1024)  # Buffer size
+                if not data:
+                    break
+                print(f"Received: {data.decode()}")
+                run()
+                # Optionally, send a response
+                conn.sendall(data)  # Echo back the received data
+
+
+
 
 
 
