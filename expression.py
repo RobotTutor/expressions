@@ -98,7 +98,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 if not data:
                     break
                 print(f"Received: {data.decode()}")
-                run()
+                if data.decode() == 1:
+                    run()
                 # Optionally, send a response
                 conn.sendall(data)  # Echo back the received data
 
