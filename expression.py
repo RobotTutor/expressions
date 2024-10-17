@@ -117,37 +117,10 @@ def run():
 
         robot_eyes_obj.setAutoblinker(True)
         robot_eyes_obj.run()
-
-
-
-
-
-
-
-
-
-
-
-    # fill the screen with a color to wipe away anything from last frame
-    # screen.fill("black")
-
-    # neutral_position()
-    # pygame.time.wait(timer)
-    # clear_screen()
-    
-    # blinking_position()
-    # pygame.time.wait(timer)
-
-
-    # pygame.display.update()
-    # pygame.display.flip()
-
-
-
-# listener()
-
         pygame.quit()
 
+
+run()
 
 
 
