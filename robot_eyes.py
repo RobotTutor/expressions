@@ -190,7 +190,18 @@ class RoboEyes:
         self.spaceBetweenDefault = space
     
 
-    
+    def set_mood(self, mood):
+        if mood == TIRED:
+            self.tired = True
+            self.angry = self.happy = False
+        elif mood == ANGRY:
+            self.angry = True
+            self.tired = self.happy = False
+        elif mood == HAPPY:
+            self.happy = True
+            self.tired = self.angry = False
+        else:
+            self.tired = self.angry = self.happy = False
     # # Set mood expression
     # def setMood(unsigned char mood):
     #     switch (mood)
@@ -273,7 +284,7 @@ class RoboEyes:
     
 
     # Set automated eye blinking, minimal blink interval in full seconds and blink interval variation range in full seconds
-    def setAutoblinker(self, active, interval, variation):
+    def setAutoblinker1(self, active, interval, variation):
         self.autoblinker = active
         self.blinkInterval = interval
         self.blinkIntervalVariation = variation
@@ -283,7 +294,7 @@ class RoboEyes:
         
 
     # Set idle mode - automated eye repositioning, minimal time interval in full seconds and time interval variation range in full seconds
-    def setIdleMode(self, active, interval, variation):
+    def setIdleMode1(self, active, interval, variation):
         self.idle = active
         self.idleInterval = interval
         self.idleIntervalVariation = variation
@@ -313,7 +324,7 @@ class RoboEyes:
 
 
     # Set vertical flickering (displacing eyes up/down)
-    def setVFlicker (self, flickerBit,  Amplitude) :
+    def setVFlicker1 (self, flickerBit,  Amplitude) :
         self.vFlicker = flickerBit # turn flicker on or off
         self.vFlickerAmplitude = Amplitude # define amplitude of flickering in pixels
     
@@ -474,20 +485,20 @@ class RoboEyes:
         if(self.autoblinker):
             if(self.millis() >= self.blinktimer):
                 self.blink()
-                self.blinktimer = self.millis()+(self.blinkInterval*1000)+(random.uniform(0,self.blinkIntervalVariation)*1000) # calculate next time for blinking
+                self.blinktimer = self.millis()+(self.blinkInterval*1000)+(random.uniform(3,self.blinkIntervalVariation)*1000) # calculate next time for blinking
                 
             
 
         # Laughing - eyes shaking up and down for the duration defined by laughAnimationDuration (default = 500ms)
         if(self.laugh):
             if(self.laughToggle):
-                self.setVFlicker(1, 5)
+                self.setVFlicker1(3, 10)
                 self.laughAnimationTimer = self.millis()
                 self.laughToggle = False
             elif(self.millis() >= self.laughAnimationTimer+self.laughAnimationDuration):
-                self.setVFlicker(0, 0)
-                laughToggle = True
-                laugh= False
+                self.setVFlicker1(0, 0)
+                self.laughToggle = True
+                self.laugh= False
             
         
 
@@ -507,9 +518,9 @@ class RoboEyes:
         # Idle - eyes moving to random positions on screen
         if(self.idle):
             if(self.millis() >= self.idleAnimationTimer):
-                self.eyeLxNext = random(self.getScreenConstraint_X())
-                self.eyeLyNext = random(self.getScreenConstraint_Y())
-                self.idleAnimationTimer = self.millis()+(self.idleInterval*1000)+(random(self.idleIntervalVariation)*1000) # calculate next time for eyes repositioning
+                self.eyeLxNext = random.uniform(0,self.getScreenConstraint_X())
+                self.eyeLyNext = random.uniform(0,self.getScreenConstraint_Y())
+                self.idleAnimationTimer = self.millis()+(self.idleInterval*1000)+(random.uniform(0,self.idleIntervalVariation)*1000) # calculate next time for eyes repositioning
             
         
 
@@ -554,69 +565,67 @@ class RoboEyes:
             pygame.draw.rect(self.screen, MAINCOLOR, (self.eyeRx, self.eyeRy, self.eyeRwidthCurrent, self.eyeRheightCurrent), border_radius=int(self.eyeRborderRadiusCurrent)) #right eye
 
         # Prepare mood type transitions
-        # if (tired):eyelidsTiredHeightNext = eyeLheightCurrent/2 eyelidsAngryHeightNext = 0 else:eyelidsTiredHeightNext = 0
-        # if (angry):eyelidsAngryHeightNext = eyeLheightCurrent/2 eyelidsTiredHeightNext = 0 else:eyelidsAngryHeightNext = 0
-        # if (happy):eyelidsHappyBottomOffsetNext = eyeLheightCurrent/2 else:eyelidsHappyBottomOffsetNext = 0
+        if (self.tired):
+            self.eyelidsTiredHeightNext = self.eyeLheightCurrent/2 
+            self.eyelidsAngryHeightNext = 0 
+        else:
+            self.eyelidsTiredHeightNext = 0
+        if (self.angry):
+            self.eyelidsAngryHeightNext = self.eyeLheightCurrent/2 
+            self.eyelidsTiredHeightNext = 0 
+        else:
+            self.eyelidsAngryHeightNext = 0
+        if (self.happy):
+            self.eyelidsHappyBottomOffsetNext = self.eyeLheightCurrent/2 
+        else:
+            self.eyelidsHappyBottomOffsetNext = 0
 
         # Draw tired top eyelids 
-            self.eyelidsTiredHeight = (self.eyelidsTiredHeight + self.eyelidsTiredHeightNext)/2
-            if not(self.cyclops):
-                pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx, self.eyeLy+self.eyelidsTiredHeight-1)])
-                pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeRx, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy+self.eyelidsTiredHeight-1)])
+        self.eyelidsTiredHeight = (self.eyelidsTiredHeight + self.eyelidsTiredHeightNext)/2
+        if not(self.cyclops):
+            pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx, self.eyeLy+self.eyelidsTiredHeight-1)])
+            pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeRx, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy+self.eyelidsTiredHeight-1)])
 
-                
-                # display.fillTriangle(eyeLx, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # left eye 
-                # display.fillTriangle(eyeRx, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy+eyelidsTiredHeight-1, BGCOLOR) # right eye
-            else :
-            # Cyclops tired eyelids
-                pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx, self.eyeLy-1),(self.eyeLx+(self.eyeLwidthCurrent)/2, self.eyeLy-1),(self.eyeLx, self.eyeLy+self.eyelidsTiredHeight-1)])
-                pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx+(self.eyeLwidthCurrent/2), self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy+self.eyelidsTiredHeight-1)])
+            
+            # display.fillTriangle(eyeLx, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # left eye 
+            # display.fillTriangle(eyeRx, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy+eyelidsTiredHeight-1, BGCOLOR) # right eye
+        else :
+        # Cyclops tired eyelids
+            pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx, self.eyeLy-1),(self.eyeLx+(self.eyeLwidthCurrent)/2, self.eyeLy-1),(self.eyeLx, self.eyeLy+self.eyelidsTiredHeight-1)])
+            pygame.draw.polygon(self.screen,BGCOLOR, [(self.eyeLx+(self.eyeLwidthCurrent/2), self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy+self.eyelidsTiredHeight-1)])
 
-                
-                # display.fillTriangle(eyeLx, eyeLy-1, eyeLx+(eyeLwidthCurrent/2), eyeLy-1, eyeLx, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # left eyelid half
-                # display.fillTriangle(eyeLx+(eyeLwidthCurrent/2), eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # right eyelid half
+            
+            # display.fillTriangle(eyeLx, eyeLy-1, eyeLx+(eyeLwidthCurrent/2), eyeLy-1, eyeLx, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # left eyelid half
+            # display.fillTriangle(eyeLx+(eyeLwidthCurrent/2), eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy+eyelidsTiredHeight-1, BGCOLOR) # right eyelid half
             
 
         # Draw angry top eyelids 
-            self.eyelidsAngryHeight = (self.eyelidsAngryHeight + self.eyelidsAngryHeightNext)/2
-            if not(self.cyclops): 
-                pygame.draw.polygon(self.screen,BGCOLOR,[(self.eyeLx, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy+self.eyelidsAngryHeight-1)])
-                pygame.draw.polygon(self.screen,BGCOLOR,[(self.eyeRx, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy-1),(self.eyeRx, self.eyeRy+self.eyelidsAngryHeight-1)])
-                
-                # self.display.fillTriangle(eyeLx, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy+eyelidsAngryHeight-1, BGCOLOR) # left eye
-                # self.display.fillTriangle(eyeRx, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy-1, eyeRx, eyeRy+eyelidsAngryHeight-1, BGCOLOR) # right eye
-            else :
-            # Cyclops angry eyelids
+        self.eyelidsAngryHeight = (self.eyelidsAngryHeight + self.eyelidsAngryHeightNext)/2
+        if not(self.cyclops): 
+            pygame.draw.polygon(self.screen,BGCOLOR,[(self.eyeLx, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy-1),(self.eyeLx+self.eyeLwidthCurrent, self.eyeLy+self.eyelidsAngryHeight-1)])
+            pygame.draw.polygon(self.screen,BGCOLOR,[(self.eyeRx, self.eyeRy-1),(self.eyeRx+self.eyeRwidthCurrent, self.eyeRy-1),(self.eyeRx, self.eyeRy+self.eyelidsAngryHeight-1)])
+            
+            # self.display.fillTriangle(eyeLx, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy-1, eyeLx+eyeLwidthCurrent, eyeLy+eyelidsAngryHeight-1, BGCOLOR) # left eye
+            # self.display.fillTriangle(eyeRx, eyeRy-1, eyeRx+eyeRwidthCurrent, eyeRy-1, eyeRx, eyeRy+eyelidsAngryHeight-1, BGCOLOR) # right eye
+        else :
+        # Cyclops angry eyelids
+            pygame.draw.polygon(self.screen,BGCOLOR,)
 
-                pygame.draw.polygon(self.screen,BGCOLOR,)
-
-                pygame.draw.polygon(self.screen, BGCOLOR, [(self.eyeLx, self.eyeLy-1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy - 1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy + self.eyelidsAngryHeight - 1)])
-                pygame.draw.polygon(self.scree, BGCOLOR, [(self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy - 1), (self.eyeLx + self.eyeLwidthCurrent, self.eyeLy - 1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy + self.eyelidsAngryHeight - 1)])
+            pygame.draw.polygon(self.screen, BGCOLOR, [(self.eyeLx, self.eyeLy-1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy - 1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy + self.eyelidsAngryHeight - 1)])
+            pygame.draw.polygon(self.scree, BGCOLOR, [(self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy - 1), (self.eyeLx + self.eyeLwidthCurrent, self.eyeLy - 1), (self.eyeLx + (self.eyeLwidthCurrent / 2), self.eyeLy + self.eyelidsAngryHeight - 1)])
             
 
         # Draw happy bottom eyelids
-            self.eyelidsHappyBottomOffset = (self.eyelidsHappyBottomOffset + self.eyelidsHappyBottomOffsetNext)/2
-            pygame.draw.rect(self.screen, BGCOLOR, (self.eyeLx - 1, (self.eyeLy + self.eyeLheightCurrent) - self.eyelidsHappyBottomOffset + 1, self.eyeLwidthCurrent + 2, self.eyeLheightDefault), border_radius=int(self.eyeLborderRadiusCurrent))
-            if not(self.cyclops): 
-                pygame.draw.rect(self.screen, BGCOLOR, (self.eyeRx - 1, (self.eyeRy + self.eyeRheightCurrent) - self.eyelidsHappyBottomOffset + 1, self.eyeRwidthCurrent + 2, self.eyeRheightDefault), border_radius=int(self.eyeRborderRadiusCurrent))
+        self.eyelidsHappyBottomOffset = (self.eyelidsHappyBottomOffset + self.eyelidsHappyBottomOffsetNext)/2
+        pygame.draw.rect(self.screen, BGCOLOR, (self.eyeLx - 1, (self.eyeLy + self.eyeLheightCurrent) - self.eyelidsHappyBottomOffset + 1, self.eyeLwidthCurrent + 2, self.eyeLheightDefault), border_radius=int(self.eyeLborderRadiusCurrent))
+        if not(self.cyclops): 
+            pygame.draw.rect(self.screen, BGCOLOR, (self.eyeRx - 1, (self.eyeRy + self.eyeRheightCurrent) - self.eyelidsHappyBottomOffset + 1, self.eyeRwidthCurrent + 2, self.eyeRheightDefault), border_radius=int(self.eyeRborderRadiusCurrent))
             
-
         pygame.display.flip()
         pygame.display.update()
 
 
-    def set_mood(self, mood):
-        if mood == TIRED:
-            self.tired = True
-            self.angry = self.happy = False
-        elif mood == ANGRY:
-            self.angry = True
-            self.tired = self.happy = False
-        elif mood == HAPPY:
-            self.happy = True
-            self.tired = self.angry = False
-        else:
-            self.tired = self.angry = self.happy = False
+   
 
     def run(self):
         clock = pygame.time.Clock()
