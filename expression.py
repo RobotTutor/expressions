@@ -2,6 +2,8 @@
 import pygame 
 from pygame import Rect
 import socket
+from robot_eyes import RoboEyes
+
 
 
 
@@ -13,6 +15,8 @@ running = True
 
 rect = (380, 280, 120, 100) 
 timer = 1000
+# object = robot_eyes(800,480)
+robot_eyes_obj = RoboEyes()
 
 def update():
     pygame.display.update()
@@ -54,62 +58,104 @@ def blinking_position():
 
 
     
+# def listener():
+
+#     # Define the host and port
+#     HOST = '0.0.0.0'  # Localhost
+#     PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
+
+#     # Create a TCP socket
+#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+#         # Bind the socket to the address and port
+#         s.bind((HOST, PORT))
+#         # Listen for incoming connections
+#         s.listen()
+#         print(f"Listening on {HOST}:{PORT}...")
+
+#         while True:
+#             # Accept a connection
+#             conn, addr = s.accept()
+        
+#             with conn:
+#                 print(f"Connected by {addr}")
+#                 while True:
+#                     data = conn.recv(1024)  # Buffer size
+#                     if not data:
+#                         break
+#                     print(f"Received: {data.decode()}")
+#                     # print(type(data.decode()))
+#                     if data.decode() == '0':
+#                         while running:
+#             # poll for events
+#             # pygame.QUIT event means the user clicked X to close your window
+#                             for event in pygame.event.get():
+#                                 if event.type == pygame.QUIT:
+#                                     running = False
+
+#                             # fill the screen with a color to wipe away anything from last frame
+#                             screen.fill("black")
+
+#                             neutral_position()
+#                             pygame.time.wait(timer)
+#                             clear_screen()
+                            
+#                             blinking_position()
+#                             pygame.time.wait(timer)
 
 
-# Define the host and port
-HOST = '0.0.0.0'  # Localhost
-PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
-
-# Create a TCP socket
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # Bind the socket to the address and port
-    s.bind((HOST, PORT))
-    # Listen for incoming connections
-    s.listen()
-    print(f"Listening on {HOST}:{PORT}...")
-
+#                             pygame.display.update()
+#                             pygame.display.flip()
+#                     # Optionally, send a response
+#                     conn.sendall(data)  # Echo back the received data
+def run():
     while True:
-        # Accept a connection
-        conn, addr = s.accept()
-       
-        with conn:
-            print(f"Connected by {addr}")
-            while True:
-                data = conn.recv(1024)  # Buffer size
-                if not data:
-                    break
-                print(f"Received: {data.decode()}")
-                # print(type(data.decode()))
-                if data.decode() == '0':
-                    while running:
-        # poll for events
-        # pygame.QUIT event means the user clicked X to close your window
-                        for event in pygame.event.get():
-                            if event.type == pygame.QUIT:
-                                running = False
+            # poll for events
+            # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-                        # fill the screen with a color to wipe away anything from last frame
-                        screen.fill("black")
-
-                        neutral_position()
-                        pygame.time.wait(timer)
-                        clear_screen()
-                        
-                        blinking_position()
-                        pygame.time.wait(timer)
+        robot_eyes_obj.setAutoblinker(True)
+        robot_eyes_obj.run()
 
 
-                        pygame.display.update()
-                        pygame.display.flip()
-                # Optionally, send a response
-                conn.sendall(data)  # Echo back the received data
+
+
+
+
+
+
+
+
+
+    # fill the screen with a color to wipe away anything from last frame
+    # screen.fill("black")
+
+    # neutral_position()
+    # pygame.time.wait(timer)
+    # clear_screen()
     
+    # blinking_position()
+    # pygame.time.wait(timer)
+
+
+    # pygame.display.update()
+    # pygame.display.flip()
+
+
+
+# listener()
+
+        pygame.quit()
 
 
 
 
 
 
-pygame.quit()
+
+
+
+
 
 
