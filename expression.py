@@ -3,6 +3,7 @@ import pygame
 from pygame import Rect
 import socket
 from robot_eyes import RoboEyes
+import time
 
 
 
@@ -68,12 +69,16 @@ def run():
                 running = False
 
         # robot_eyes_obj.setAutoblinker(True)
-        # robot_eyes_obj.set_mood(ANGRY)
+        # robot_eyes_obj.set_mood(HAPPY)
+
+        # time.sleep(10)
+        # robot_eyes_obj.set_mood(TIRED)
+        
 
         # robot_eyes_obj.setCuriosity(True)
         # robot_eyes_obj.anim_laugh()
         robot_eyes_obj.setAutoblinker1(True,0,10)
-        robot_eyes_obj.setIdleMode(True)
+        # robot_eyes_obj.setIdleMode(True)
         robot_eyes_obj.run()
         pygame.quit()
 

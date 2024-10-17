@@ -29,8 +29,8 @@ class RoboEyes:
         self.eyeR_open = False
 
         # EYE LEFT - size and border radius
-        self. eyeLwidthDefault = 100
-        self. eyeLheightDefault = 200
+        self. eyeLwidthDefault = 200
+        self. eyeLheightDefault = 300
         self. eyeLwidthCurrent = self.eyeLwidthDefault
         self. eyeLheightCurrent = 1 # start with closed eye, otherwise set to eyeLheightDefault
         self. eyeLwidthNext = self.eyeLwidthDefault
@@ -55,9 +55,9 @@ class RoboEyes:
         self. eyeRborderRadiusNext = self.eyeRborderRadiusDefault
 
         # Space between eyes
-        self. spaceBetweenDefault = 50
+        self. spaceBetweenDefault = 150
         self. spaceBetweenCurrent = self.spaceBetweenDefault
-        self. spaceBetweenNext = 50
+        self. spaceBetweenNext = 150
 
         # EYE LEFT - Coordinates
         self. eyeLxDefault = ((self.screen_width)-(self.eyeLwidthDefault+self.spaceBetweenDefault+self.eyeRwidthDefault))/2
