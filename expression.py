@@ -78,7 +78,7 @@ def run():
         # robot_eyes_obj.setCuriosity(True)
         # robot_eyes_obj.anim_laugh()
         robot_eyes_obj.setAutoblinker1(True,0,10)
-        # robot_eyes_obj.setIdleMode(True)
+        robot_eyes_obj.setIdleMode(True)
         robot_eyes_obj.run()
         pygame.quit()
 
